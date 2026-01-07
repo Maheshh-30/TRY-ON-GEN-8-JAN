@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TryOn Genie - Virtual Fashion Try-On</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span>TryOn Genie</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#how-it-works">How It Works</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1 class="glowing-text">Try Before You Buy</h1>
+            <p class="hero-subtitle">Experience the future of online shopping with AI-powered virtual try-on</p>
+            <button class="cta-button" onclick="scrollToTryOn()">
+                <span>Start Trying Now</span>
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <h2 class="section-title">Amazing Features</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <h3>Webcam Support</h3>
+                <p>Use your device camera for real-time try-on experience</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-upload"></i>
+                </div>
+                <h3>Upload Photos</h3>
+                <p>Upload your photos and clothes to see instant results</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-tshirt"></i>
+                </div>
+                <h3>Multiple Outfits</h3>
+                <p>Try different clothes and accessories virtually</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-download"></i>
+                </div>
+                <h3>Download Results</h3>
+                <p>Save and share your virtual try-on images</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Try-On Application -->
+    <section class="try-on-section" id="how-it-works">
+        <h2 class="section-title">Virtual Try-On Studio</h2>
+        
+        <div class="try-on-container">
+            <!-- Left Panel - Upload Options -->
+            <div class="upload-panel">
+                <div class="upload-card">
+                    <h3><i class="fas fa-user"></i> Your Photo</h3>
+                    <div class="upload-options">
+                        <button class="option-btn" onclick="openFileUpload('person')">
+                            <i class="fas fa-image"></i>
+                            <span>Upload Photo</span>
+                        </button>
+                        <button class="option-btn" onclick="openWebcam()">
+                            <i class="fas fa-camera"></i>
+                            <span>Use Webcam</span>
+                        </button>
+                    </div>
+                    <input type="file" id="person-upload" accept="image/*" style="display: none;" onchange="handlePersonUpload(event)">
+                    
+                    <div class="preview-container" id="person-preview">
+                        <p class="placeholder-text">No image uploaded</p>
+                    </div>
+                </div>
+
+                <div class="upload-card">
+                    <h3><i class="fas fa-tshirt"></i> Clothing Item</h3>
+                    <div class="upload-options">
+                        <button class="option-btn" onclick="openFileUpload('clothes')">
+                            <i class="fas fa-image"></i>
+                            <span>Upload Clothes</span>
+                        </button>
+                    </div>
+                    <input type="file" id="clothes-upload" accept="image/*" style="display: none;" onchange="handleClothesUpload(event)">
+                    
+                    <div class="preview-container" id="clothes-preview">
+                        <p class="placeholder-text">No clothing uploaded</p>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button class="control-btn try-on-btn" onclick="applyTryOn()" disabled id="apply-btn">
+                        <i class="fas fa-magic"></i>
+                        <span>Apply Try-On</span>
+                    </button>
+                    <button class="control-btn reset-btn" onclick="resetAll()">
+                        <i class="fas fa-redo"></i>
+                        <span>Reset All</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Panel - Result Display -->
+            <div class="result-panel">
+                <div class="result-header">
+                    <h3>Result Preview</h3>
+                    <div class="result-controls">
+                        <button class="icon-btn" onclick="downloadResult()" id="download-btn" disabled title="Download">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="icon-btn" onclick="shareResult()" id="share-btn" disabled title="Share">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="canvas-container">
+                    <canvas id="result-canvas"></canvas>
+                    <div class="canvas-placeholder" id="canvas-placeholder">
+                        <i class="fas fa-image"></i>
+                        <p>Your try-on result will appear here</p>
+                    </div>
+                    <div class="loading-overlay" id="loading-overlay">
+                        <div class="spinner"></div>
+                        <p>Processing your try-on...</p>
+                    </div>
+                </div>
+
+                <!-- Adjustment Controls -->
+                <div class="adjustment-panel">
+                    <h4>Adjust Clothing</h4>
+                    <div class="slider-group">
+                        <label>Size: <span id="size-value">100</span>%</label>
+                        <input type="range" id="size-slider" min="50" max="150" value="100" oninput="updateSize(this.value)">
+                    </div>
+                    <div class="slider-group">
+                        <label>Opacity: <span id="opacity-value">80</span>%</label>
+                        <input type="range" id="opacity-slider" min="0" max="100" value="80" oninput="updateOpacity(this.value)">
+                    </div>
+                    <div class="slider-group">
+                        <label>Vertical Position: <span id="position-value">0</span>px</label>
+                        <input type="range" id="position-slider" min="-200" max="200" value="0" oninput="updatePosition(this.value)">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Webcam Modal -->
+    <div class="modal" id="webcam-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Capture Photo</h3>
+                <button class="close-btn" onclick="closeWebcam()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <video id="webcam-video" autoplay playsinline></video>
+                <canvas id="webcam-canvas" style="display: none;"></canvas>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn capture-btn" onclick="capturePhoto()">
+                    <i class="fas fa-camera"></i>
+                    <span>Capture Photo</span>
+                </button>
+                <button class="modal-btn cancel-btn" onclick="closeWebcam()">
+                    <span>Cancel</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>TryOn Genie</h3>
+                <p>Revolutionizing online fashion shopping with AI-powered virtual try-on technology.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#how-it-works">Try Now</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Connect</h4>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 TryOn Genie. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
